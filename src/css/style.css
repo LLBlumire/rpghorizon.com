@@ -1,0 +1,204 @@
+/* Base Content Styling */
+body {
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 14pt;
+    background-color: var(--background-2);
+    color: var(--font-1);
+}
+
+.hero {
+    background-color: var(--background-1);
+    padding: 3rem 1rem;
+    display: flex;
+    gap: 1rem;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hero .hero__title {
+    font-size: 4rem;
+    transform: rotate(-1.5deg);
+}
+
+.hero .hero__subtitle {
+    font-weight: 400;
+    transform: rotate(1deg);
+}
+
+.hero .hero__title,
+.hero .hero__subtitle {
+    background-color: var(--red-55);
+    padding-inline: 0.25em;
+    color: var(--white-95);
+    text-align: center;
+}
+
+.chit {
+    background-color: var(--chit-accent, var(--red-55));
+    padding-inline: 0.25em;
+    margin-right: 0.1em;
+    color: var(--black-05);
+}
+.chit--blue {
+    --chit-accent: var(--blue-60);
+}
+.chit--green {
+    --chit-accent: var(--green-70);
+}
+.chit--yellow {
+    --chit-accent: var(--yellow-80);
+}
+
+.info,
+.article {
+    max-width: 70ch;
+    width: 100%;
+    background-color: var(--background-1);
+    padding: 1rem;
+}
+
+.article * + * {
+    margin-top: 1em;
+}
+.article blockquote {
+    border-left: 2pt solid var(--stroke);
+    padding-left: 1rem;
+}
+
+.article hr {
+    border: none;
+    border-bottom: 2pt solid var(--stroke);
+    height: 2pt;
+}
+
+.article .table-wrapper {
+    overflow-x: scroll;
+    white-space: nowrap
+}
+.article table {
+    border: 2pt solid var(--stroke);
+    border-collapse: collapse;
+}
+.article table thead {
+    background-color: var(--background-2);
+}
+.article table tbody tr:nth-child(even) {
+    background-color: var(--background-2);
+}
+.article table tbody td,
+.article table thead th {
+    padding-inline: 1rem;
+    padding-block: 0.25rem;
+}
+
+.info__content {
+    margin-top: 1rem;
+}
+.info__content * + * {
+    margin-top: 1em
+}
+
+.heading {
+    margin-top: 2rem;
+    width: 100%;
+    max-width: 70ch;
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+}
+
+.gallery {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(35ch, 100%), 1fr));
+    width: 100%;
+    max-width: 125rem;
+}
+.gallery .post {
+    position: relative;
+    background-color: var(--background-1);
+}
+.gallery .post .post__image {
+    position: absolute;
+    height: 200px;
+    width: 100%;
+    object-fit: cover;
+}
+.gallery .post .post__title {
+    height: 200px;
+    z-index: 100;
+    position: relative;
+    background: var(--black-10);
+    background: linear-gradient(0deg, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.55) 15%, rgba(0,0,0,0) 100%);
+    display: flex;
+    align-items: flex-end;
+    padding: 0.5rem 1rem;
+    color: var(--white-95);
+}
+.gallery .post .post__title a[href] {
+    color: var(--text-1);
+    text-decoration: none;
+}
+.gallery .post .post__content {
+    padding: 0 1rem 3rem 1rem;
+}
+.gallery .post .post__game {
+    padding: 0.5rem 1rem;
+    text-transform: lowercase;
+    font-variant: small-caps;
+    color: var(--red-55);
+    letter-spacing: 0.0625rem;
+    font-weight: bold;
+}
+@media (prefers-color-scheme: dark) {
+    .gallery .post .post__game {
+        color: var(--green-70);
+    }
+}
+.gallery .post .post__readmore {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    display: block;
+}
+
+.sitebar {
+    background-color: var(--background-1);
+    padding-inline: 2rem;
+    padding-block: 1rem;
+    display: flex;
+}
+
+.sitebar .sitebar__title {
+    background-color: var(--red-55);
+    padding-inline: 0.25em;
+    transform: rotate(-1deg);
+}
+
+.sitebar .sitebar__title a[href] {
+    color: var(--text-1);
+    text-decoration: none;
+}
+
+.footer {
+    background-color: var(--background-1);
+    padding: 1rem;
+    display: grid;
+    place-items: center;
+}
+
+main {
+    width: 100%;
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    align-items: center;
+}
+
+a[href], a[href]:visited {
+    color: var(--blue-60);
+    font-weight: bold;
+}
+

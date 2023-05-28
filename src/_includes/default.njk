@@ -1,0 +1,24 @@
+---
+layout: base.njk
+---
+
+<header class="sitebar">
+    <h1 class="sitebar__title"><a href="/">RPG Horizon</a></h1>
+</header>
+<main>
+    <article class="article">
+        {{ content | safe }}
+    </article>
+    <section class="info">
+        <p><b>Author: </b> {{ author }}</p>
+        <p><b>Published: </b> {{ page.date.toUTCString() }}</p>
+        {%- if originalURL and originalTitle -%}
+        <p><b>Original: </b> <a href="{{ originalURL }}">{{ originalTitle }}</a></p>
+        {%- endif -%}
+    </section>
+</main>
+<footer class="footer">
+    <p>If you enjoy the content on this website, consider supporting it on 
+    <a href="https://www.patreon.com/rpghorizon">
+    Patreon</a>.</p>
+</footer>

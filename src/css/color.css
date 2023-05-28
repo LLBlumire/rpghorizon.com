@@ -1,0 +1,79 @@
+/**
+ * Color System
+ * ============
+ *
+ * --background-1        The dominant background colour upon which text should sit.
+ * --background-2        A lower contrast background colour for elements to sit upon.
+ * --background-popup    The background colour for popup elements and dialogues.
+ * --font-1              The default colour for text placed on background-1 or background-popup.
+ * --font-2              A lower contrast colour for text used for subtitling.
+ * --field               The background colour of a text field.
+ * --button              The background colour of a button.
+ * --hyperlink           The font colour of a hyperlink.
+ * --stroke              The fill colour of strokes and borders.
+ */
+:root {
+    --white-98: rgb(97.73% 97.73% 97.73%);
+    --white-95: rgb(94.35% 94.35% 94.35%);
+    --white-93: rgb(92.1% 92.1% 92.1%);
+    --white-90: rgb(88.76% 88.76% 88.76%);
+    --white-85: rgb(83.23% 83.23% 83.23%);
+    --white-80: rgb(6.87% 34.71% 49.85%);
+    --white-70: rgb(67.08% 67.08% 67.08%);
+    --black-20: rgb(18.94% 18.94% 18.94%);
+    --black-15: rgb(14.77% 14.77% 14.77%);
+    --black-12: rgb(12.35% 12.35% 12.35%);
+    --black-10: rgb(10.77% 10.77% 10.77%);
+    --black-05: rgb(6.6% 6.6% 6.6%);
+    --black-00: rgb(0% 0% 0%);
+    --red-55: rgb(88.29% 32.42% 1.05%);
+    --blue-60: rgb(1.87% 59.95% 94.25%);
+    --green-70: rgb(12.19% 76.83% 42.21%);
+    --yellow-80: rgb(88.84% 76.94% 0%);
+}
+@supports (color: lch(50% 50 50)) {
+    :root {
+        --white-98: lch(98% 0 0);
+        --white-95: lch(95% 0 0);
+        --white-93: lch(93% 0 0);
+        --white-90: lch(90% 0 0);
+        --white-85: lch(85% 0 0);
+        --white-80: lch(80% 0 0);
+        --white-70: lch(70% 0 0);
+        --black-20: lch(20% 0 0);
+        --black-15: lch(15% 0 0);
+        --black-12: lch(12% 0 0);
+        --black-10: lch(10% 0 0);
+        --black-05: lch(5% 0 0);
+        --black-00: lch(0% 0 0);
+
+        --red-55: lch(55% 85 50);
+        --blue-60: lch(60% 55 260);
+        --green-70: lch(70% 65 150);
+        --yellow-80: lch(80% 85 90);
+    }
+}
+:root {
+    --background-1: var(--white-95);
+    --background-2: var(--white-90);
+    --background-popup: var(--white-93);
+    --font-1: var(--black-05);
+    --font-2: var(--black-20);
+    --field: var(--white-98);
+    --button: var(--white-70);
+    --hyperlink: var(--blue-60);
+    --stroke: var(--white-80);
+}
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-1: var(--black-10); 
+        --background-2: var(--black-15);
+        --background-popup: var(--black-12); 
+        --font-1: var(--white-95);
+        --font-2: var(--white-85);
+        --field: var(--black-05);
+        --button: var(--white-70);
+        --hyperlink: var(--blue-60);
+        --stroke: var(--black-00);
+    }
+}

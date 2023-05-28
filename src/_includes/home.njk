@@ -1,0 +1,109 @@
+---
+layout: base.njk
+---
+
+<header class="hero">
+    <h1 class="hero__title">RPG Horizon</h1>
+    <h2 class="hero__subtitle">Digital Tools for Adventure Games</h2>
+</header>
+<main>
+    <section class="info">
+        <h2 class="info__title"><span class="chit">Horizon Digital Toolkit</span></h2>
+        <div class="info__content">
+            <p>
+                The Digital Toolkit is a set of tools for character, campaign,
+                session, and live-play management. It sits at an intersection of
+                traditional virtual table tops and campaign managers, but is
+                designed to provide bespoke tools for each adventure game it
+                supports&mdash;instead of taking a more general 'any game'
+                approach.
+            </p>
+            <p>
+                The Digital Toolkit is being developed initially with support 
+                for <a href="https://necroticgnome.com/products/old-school-essentials-basic-rules">
+                Old-School Essentials Classic Fantasy</a>. As this system exists
+                in an entirely open-license format through the
+                <a href="https://oldschoolessentials.necroticgnome.com/srd/index.php/%E2%A7%BCOpen_Game_License%E2%A7%BD">
+                OGL</a>. Other games and support for supplements of OSE are
+                planned to be developed after the tool for OSE launches.
+            </p>
+            <p>
+                Development of the Digital Toolkit is on hold. See
+                <a href="https://rpghorizon.com/posts/2023-01-09_horizon/">
+                this article</a> for an explanation.
+            </p>
+        </div>
+    </section>
+    <section class="info">
+        <h2 class="info__title">
+            <span class="chit chit--yellow">News</span>,
+            <span class="chit chit--green">Reviews</span>, and
+            <span class="chit chit--blue">Discussion</span>
+        </h2>
+        <div class="info__content">
+            <p>
+                RPG Horizon aims to support a wide range of tabletop adventure
+                games with news, reviews, and discussion. Not all the games
+                discussed are ones with support in the digital toolkit, but
+                instead showcase the much broader scale of the adventure gaming
+                hobby!
+            </p>
+            <p>
+                If you'd like to join the discussion, or suggest content for
+                review and showcasing, then the best place to do it is on the 
+                <a href="https://discord.gg/gBUZN42kaX">
+                community discord</a>. If you want to see video content with
+                similar topics and themes as the website, then check out the
+                <a href="https://www.youtube.com/@Horizon-RPG">
+                @Horizon-RPG on Youtube</a>.
+            </p>
+        </div>
+    </section>
+    <section class="info">
+        <h2 class="info__title">
+            <span class="chit chit--red">Support RPG Horizon</span>
+        </h2>
+        <div class="info__content">
+            If you enjoy the content on this website, and want to support the
+            creation of more of it, then consider supporting on
+            <a href="https://patreon.com/rpghorizon">
+            Patreon</a>. The funding and support enables the website to be
+            hosted, as well as the purchasing of equipment and development
+            of the digital toolkit.
+        </div>
+    </section>
+    <div class="heading"><h2>Top Articles</h2></div>
+    <div class="gallery">
+        {%- for post in collections.top | limit(4) -%}
+            <article class="post">
+                <img class="post__image" src="{{ post.data.image | url }}" />
+                <h3 class="post__title"><a href="{{ post.url }}">
+                {{ post.data.title }}</a></h3>
+                <div class="post__game">{{ post.data.game }}</div>
+                <div class="post__content">{{ post.data.desc }}</div>
+                <a class="post__readmore" href="{{ post.url }}">
+                Read more&hellip;</a>
+            </article>
+        {%- endfor -%}
+    </div>
+    <div class="heading"><h2>Recent Articles</h2>
+    <a href="#">
+    Read more&hellip;</a></div>
+    <div class="gallery">
+        {%- for post in collections.post | reverse -%}
+            <section class="post">
+                <img class="post__image" src="{{ post.data.image | url }}" />
+                <h3 class="post__title">{{ post.data.title }}</h3>
+                <div class="post__game">{{ post.data.game }}</div>
+                <div class="post__content">{{ post.data.desc }}</div>
+                <a class="post__readmore" href="{{ post.url }}">
+                Read more&hellip;</a>
+            </section>
+        {%- endfor -%}
+    </div>
+</main>
+<footer class="footer">
+    <p>If you enjoy the content on this website, consider supporting it on 
+    <a href="https://www.patreon.com/rpghorizon">
+    Patreon</a>.</p>
+</footer>
