@@ -28,3 +28,10 @@ dist/
 
 
 .direnv/
+
+# Infrastructure state, plans, credentials, and local Nix artifacts
+.terraform/
+*.tfstate*
+*.tfplan
+.env.local
+result
