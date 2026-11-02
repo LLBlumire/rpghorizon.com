@@ -1,0 +1,113 @@
+#!/usr/bin/env python3
+"""Certbot DNS-01 hooks restricted to the RPG Horizon apex and www names.
+
+Read root-only JSON credentials from /etc/letsencrypt/rpghorizon-porkbun.json.
+Create one TXT record; pass its ID to cleanup through CERTBOT_AUTH_OUTPUT.
+Never delete by name, so concurrent challenges and unrelated TXT records survive.
+"""
+import http.client
+import json
+import os
+from pathlib import Path
+import re
+import stat
+import subprocess
+import sys
+import time
+import urllib.error
+import urllib.request
+
+SITES = {'rpghorizon.com', 'www.rpghorizon.com'}
+BASE = 'https://api.porkbun.com/api/json/v3'
+CREDENTIALS = Path('/etc/letsencrypt/rpghorizon-porkbun.json')
+
+
+class IPv4HTTPSConnection(http.client.HTTPSConnection):
+    def __init__(self, *args, **kwargs):
+        # Binding an IPv4 source makes create_connection skip unusable IPv6
+        # addresses before connecting. TLS still checks the original hostname.
+        kwargs['source_address'] = ('0.0.0.0', 0)
+        super().__init__(*args, **kwargs)
+
+
+class IPv4HTTPSHandler(urllib.request.HTTPSHandler):
+    def https_open(self, request):
+        return self.do_open(IPv4HTTPSConnection, request, context=self._context)
+
+
+def api(path, credentials, **data):
+    request = urllib.request.Request(BASE + path,
+        data=json.dumps({**credentials, **data}).encode(),
+        headers={'Content-Type': 'application/json'}, method='POST')
+    opener = urllib.request.build_opener(IPv4HTTPSHandler())
+    with opener.open(request, timeout=30) as response:
+        result = json.load(response)
+    if result.get('status') != 'SUCCESS':
+        raise RuntimeError('Porkbun rejected the DNS operation')
+    return result
+
+
+def main():
+    mode = sys.argv[1] if len(sys.argv) == 2 else ''
+    domain = os.environ.get('CERTBOT_DOMAIN', '')
+    token = os.environ.get('CERTBOT_VALIDATION', '')
+    if mode not in ('auth', 'cleanup') or domain not in SITES:
+        raise RuntimeError('Invalid mode or hostname')
+    if not re.fullmatch(r'[A-Za-z0-9_-]{43}', token):
+        raise RuntimeError('Invalid DNS challenge token')
+    info = CREDENTIALS.stat()
+    if info.st_uid != 0 or stat.S_IMODE(info.st_mode) != 0o600:
+        raise RuntimeError('Porkbun credentials must be root-owned mode 0600')
+    credentials = json.loads(CREDENTIALS.read_text())
+    if set(credentials) != {'apikey', 'secretapikey'}:
+        raise RuntimeError('Expected apikey and secretapikey in credential JSON')
+    name = '_acme-challenge' + ('.www' if domain.startswith('www.') else '')
+    fqdn = name + '.rpghorizon.com'
+    if mode == 'cleanup':
+        record_id = os.environ.get('CERTBOT_AUTH_OUTPUT', '').strip()
+        if not record_id.isdecimal():
+            raise RuntimeError('Missing challenge record ID; refusing broad cleanup')
+        records = api('/dns/retrieve/rpghorizon.com/' + record_id, credentials)['records']
+        if not records:
+            return
+        if len(records) != 1 or any(records[0].get(k) != v for k, v in
+            {'name': fqdn, 'type': 'TXT', 'content': token}.items()):
+            raise RuntimeError('Challenge record changed; refusing deletion')
+        api('/dns/delete/rpghorizon.com/' + record_id, credentials)
+        return
+    # Do not retry this POST automatically: an ambiguous failure needs inspection.
+    record_id = str(api('/dns/create/rpghorizon.com', credentials,
+                        name=name, type='TXT', content=token, ttl='600')['id'])
+    try:
+        # Check every authoritative server and two recursive resolvers. The latter
+        # can retain a previous negative response beyond authoritative propagation.
+        servers = subprocess.check_output(
+            ['dig', '-4', '+short', 'NS', 'rpghorizon.com'], text=True, timeout=15).split()
+        if not servers:
+            raise RuntimeError('No authoritative DNS servers found')
+        deadline = time.monotonic() + 900
+        while time.monotonic() < deadline:
+            ready = True
+            for server in [*servers, '1.1.1.1', '8.8.8.8']:
+                result = subprocess.run(['dig', '-4', '+short', '+time=3', '+tries=1',
+                    '@' + server, 'TXT', fqdn], capture_output=True, text=True,
+                    timeout=10, check=False)
+                if result.returncode or f'"{token}"' not in result.stdout.splitlines():
+                    ready = False
+            if ready:
+                print(record_id, flush=True)
+                return
+            time.sleep(10)
+        raise RuntimeError('DNS challenge propagation timed out')
+    except BaseException:
+        api('/dns/delete/rpghorizon.com/' + record_id, credentials)
+        raise
+
+
+if __name__ == '__main__':
+    try:
+        main()
+    except (RuntimeError, OSError, ValueError, KeyError, subprocess.SubprocessError):
+        # Never emit HTTP request/response bodies or credentials into Certbot logs.
+        print('RPG Horizon DNS hook failed; inspect DNS and the root-only credential file.', file=sys.stderr)
+        sys.exit(1)
